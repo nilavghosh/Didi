@@ -79,16 +79,16 @@ namespace SpeedNetworking
                 //Rows minus Header
                 int iRowCnt = InputSheet.Dimension.End.Row;
 
-                //for (int round = 1; round <= 5; round++)
-                //{
-                //    ExcelWorksheet Round = inWorkBook.Worksheets.Add("Round" + round.ToString());
-                //    Round.Cells["E3"].Value = "LEADER";
-                //    Round.Cells["F3"].Value = "ROWS";
-                //    Round.Cells["G3"].Value = "C1";
-                //    Round.Cells["H3"].Value = "C2";
-                //    Round.Cells["I3"].Value = "C3";
-                //    Round.Cells["E4:E" + (iRowCnt + 4).ToString()].Value = InputSheet.Cells["A2:A" + iRowCnt.ToString()].Value;
-                //}
+                for (int round = 1; round <= 5; round++)
+                {
+                    ExcelWorksheet Round = inWorkBook.Worksheets.Add("Round" + round.ToString());
+                    Round.Cells["E3"].Value = "LEADER";
+                    Round.Cells["F3"].Value = "ROWS";
+                    Round.Cells["G3"].Value = "C1";
+                    Round.Cells["H3"].Value = "C2";
+                    Round.Cells["I3"].Value = "C3";
+                    Round.Cells["E4:E" + (iRowCnt + 4).ToString()].Value = InputSheet.Cells["A2:A" + iRowCnt.ToString()].Value;
+                }
                 try
                 {
 
@@ -137,7 +137,7 @@ namespace SpeedNetworking
                 }
                 try
                 {
-                    ExcelWorksheet Layout = inWorkBook.Worksheets["Output"];
+                    ExcelWorksheet Layout = inWorkBook.Worksheets.Add("Output");
                     var participants = InputSheet.Cells["A2:F11"];
                     int m = 3;
                     int n = 1;
