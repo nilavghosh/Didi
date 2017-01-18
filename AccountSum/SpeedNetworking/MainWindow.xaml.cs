@@ -81,16 +81,23 @@ namespace SpeedNetworking
 
                 for (int round = 1; round <= 5; round++)
                 {
-                    ExcelWorksheet Round = inWorkBook.Worksheets.Add("Round" + round.ToString());
+                    ExcelWorksheet Round = inWorkBook.Worksheets["Round" + round.ToString()];
+                    if (Round == null)
+                    {
+                        Round = inWorkBook.Worksheets.Add("Round" + round.ToString());
+                    }
                     Round.Cells["E3"].Value = "LEADER";
                     Round.Cells["F3"].Value = "ROWS";
                     Round.Cells["G3"].Value = "C1";
                     Round.Cells["H3"].Value = "C2";
                     Round.Cells["I3"].Value = "C3";
                     Round.Cells["E4:E" + (iRowCnt + 4).ToString()].Value = InputSheet.Cells["A2:A" + iRowCnt.ToString()].Value;
+                    for (int r = 1; r <= iRowCnt - 1; r++)
+                    {
+                        Round.Cells["F" + (3 + r).ToString()].Value = "R" + r.ToString();
+                    }
                 }
-                try
-                {
+                
 
                     List<IEnumerable<string>> currentRoundOtherOptions = new List<IEnumerable<string>>();
                     for (int leaderRowNo = 1; leaderRowNo < iRowCnt; leaderRowNo++)
@@ -126,6 +133,8 @@ namespace SpeedNetworking
 
                         }
                     }
+                try
+                {
                 }
                 catch (Exception exp)
                 {
@@ -137,14 +146,32 @@ namespace SpeedNetworking
                 }
                 try
                 {
-                    ExcelWorksheet Layout = inWorkBook.Worksheets.Add("Output");
+                    ExcelWorksheet Layout = inWorkBook.Worksheets["Output"];
+                    if (Layout == null)
+                    {
+                        Layout = inWorkBook.Worksheets.Add("Output");
+                    }
                     var participants = InputSheet.Cells["A2:F11"];
                     int m = 3;
                     int n = 1;
                     for (int row = 2; row <= iRowCnt; row++)
                     {
+
                         for (int col = 1; col <= iColCnt; col++)
                         {
+                            TimeSpan time = new TimeSpan(6, 0, 0);
+
+                            //Templating
+                            for (int cl = 2; cl <= 12; cl = cl + 2)
+                            {
+                                Layout.Cells[m - 2, cl].Value = time.ToString();
+                                Layout.Cells[m - 1, cl].Value = "Person";
+                                time = time.Add(new TimeSpan(0, 10, 0));
+                                Layout.Cells[m - 2, cl + 1].Value = time.ToString();
+                                Layout.Cells[m - 1, cl + 1].Value = "Table";
+                                time = time.Add(new TimeSpan(0, 2, 0));
+                            }
+
                             string p = InputSheet.Cells[row, col].Value.ToString();
 
                             Layout.Cells[m, n].Value = p;
@@ -152,13 +179,14 @@ namespace SpeedNetworking
                             {
                                 n += 2;
                                 var RoundSheet = inWorkBook.Worksheets["Round" + r.ToString()];
-                                var roundSlots = RoundSheet.Cells["G" + (3 + row-1).ToString() + ":I" + (3 + row-1).ToString()];
+                                var roundSlots = RoundSheet.Cells["G" + (3 + row - 1).ToString() + ":I" + (3 + row - 1).ToString()];
                                 roundSlots.ToList().ForEach(cell =>
                                 {
                                     if (cell.Value.ToString().Contains(p))
                                     {
                                         string partner = cell.Value.ToString().Split('-').Where(part => part != p).ToList().First();
-                                        Layout.Cells[m, n].Value = partner;
+                                        Layout.Cells[m, n - 1].Value = partner;
+                                        Layout.Cells[m, n].Value = "R" + (row - 1).ToString() + "-" + "C" + (roundSlots.ToList().IndexOf(cell)+1).ToString();
                                     }
                                 });
                             }
@@ -167,7 +195,7 @@ namespace SpeedNetworking
                             n = 1;
                         }
                     }
-               
+
                 }
                 catch (Exception exp)
                 {
@@ -177,6 +205,7 @@ namespace SpeedNetworking
                 {
                     inModel.Save();
                 }
+                MessageBox.Show("Speed Networking sheet generated! Halloa!");
             }
 
         }

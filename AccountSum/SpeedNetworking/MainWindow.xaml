@@ -29,5 +29,7 @@
             <TextBlock x:Name="outputFile" Grid.Column="0" TextWrapping="Wrap"></TextBlock>
             <Button x:Name="selectOutputFile" Click="selectOutputFile_Click" Margin="204,20,34.4,-19.4">Generate Output file</Button>
         </Grid>
+        <TextBox x:Name="startTime" HorizontalAlignment="Left" Height="23" Margin="88,85.2,0,0" Grid.Row="3" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label" Content="StartTime" HorizontalAlignment="Left" Margin="88,59.2,0,0" Grid.Row="3" VerticalAlignment="Top"/>
     </Grid>
 </Window>
